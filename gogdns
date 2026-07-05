@@ -1,17 +1,53 @@
 #!/bin/sh /etc/rc.common
+# Copyright (C) 2026 OpenWrt.org
+
 START=99
 USE_PROCD=1
+
+NAME=gogdns
+PROG=/opt/gogdns/gogdns
+PID_FILE=/var/run/${NAME}.pid
+LOG_FILE=/var/log/${NAME}.log
+
 start_service() {
-    mkdir -p /etc/gogdns
+    # 检查程序是否存在
+    [ -x "$PROG" ] || {
+        logger -t "$NAME" "Error: $PROG not found or not executable"
+        return 1
+    }
+
     procd_open_instance
-    procd_set_param command /etc/gogdns/gogdns
-    procd_set_param chdir /etc/gogdns
-    procd_set_param env GOGDNS_BASE_PATH=/etc/gogdns
+    procd_set_param command "$PROG"
+    # 如果你的程序需要传参，可以加上，例如：
+    # procd_set_param command "$PROG" -c /etc/gogdns.conf
     procd_set_param respawn
     procd_set_param stdout 1
     procd_set_param stderr 1
+    procd_set_param pidfile "$PID_FILE"
     procd_close_instance
+
+    logger -t "$NAME" "Started successfully"
 }
+
 stop_service() {
-    killall gogdns
+    # 使用procd管理的服务，procd会自动处理停止
+    logger -t "$NAME" "Stopped"
+}
+
+# 可选：重启服务
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+# 可选：查看状态
+status() {
+    if [ -f "$PID_FILE" ] && kill -0 $(cat "$PID_FILE") 2>/dev/null; then
+        echo "$NAME is running (pid: $(cat $PID_FILE))"
+        return 0
+    else
+        echo "$NAME is not running"
+        return 1
+    fi
 }
