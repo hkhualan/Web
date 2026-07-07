@@ -1,0 +1,31 @@
+#!/bin/sh /etc/rc.common
+# 风扇控制开机启动脚本
+
+START=99
+STOP=10
+
+start() {
+    # 设置温度控制策略为用户空间模式
+    echo user_space > /sys/class/thermal/thermal_zone0/policy
+    
+    # 设置风扇转速为255（最高档位）
+    echo 255 > /sys/class/hwmon/hwmon2/pwm1
+    
+    logger "Fan control: set to user_space mode and PWM to 255"
+}
+
+stop() {
+    # 停止时恢复默认策略（可选）
+    echo step_wise > /sys/class/thermal/thermal_zone0/policy
+    echo 0 > /sys/class/hwmon/hwmon2/pwm1
+    
+    logger "Fan control: restored default settings"
+}
+
+boot() {
+    start
+}
+
+shutdown() {
+    stop
+}
