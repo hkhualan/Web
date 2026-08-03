@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>M3 · 界面</title>
+    <style>
+        /* 重置 & 基础 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0f1219;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.2rem;
+            color: #eef3f9;
+        }
+
+        /* 卡片 — M3 风格 */
+        .m3-card {
+            max-width: 480px;
+            width: 100%;
+            background: #1a202a;
+            border-radius: 48px;
+            padding: 2rem 1.8rem 2.2rem;
+            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            border: 1px solid #2c3542;
+            transition: box-shadow 0.2s;
+            backdrop-filter: blur(2px);
+            position: relative;
+        }
+
+        /* 顶部延迟条 — 实时 */
+        .latency-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0b0f16;
+            padding: 0.6rem 1.2rem;
+            border-radius: 60px;
+            margin-bottom: 2rem;
+            border: 1px solid #2c3a47;
+            box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .latency-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+            color: #8e9bb3;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .latency-label span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #3dd68c;
+            border-radius: 50%;
+            animation: pulse-dot 1.8s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { opacity: 0.5; transform: scale(0.9); }
+            50% { opacity: 1; transform: scale(1.2); }
+            100% { opacity: 0.5; transform: scale(0.9); }
+        }
+
+        .latency-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            background: #1e2835;
+            padding: 0.2rem 1rem;
+            border-radius: 40px;
+            color: #b6e6ff;
+            letter-spacing: 0.4px;
+            font-variant-numeric: tabular-nums;
+            border: 1px solid #334252;
+            min-width: 80px;
+            text-align: center;
+        }
+        .latency-value small {
+            font-size: 0.7rem;
+            font-weight: 400;
+            color: #7b8ba5;
+            margin-left: 4px;
+        }
+
+        /* M3 品牌 / 核心视觉 */
+        .m3-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 1.8rem 0 2.4rem;
+        }
+
+        .m3-logo {
+            font-size: 4.6rem;
+            font-weight: 700;
+            letter-spacing: -2px;
+            background: linear-gradient(145deg, #f0f7ff, #b0c9f0);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(80, 160, 255, 0.15);
+            line-height: 1;
+            margin-bottom: 0.2rem;
+        }
+
+        .m3-sub {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: #8b9bb8;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            background: #1d2633;
+            padding: 0.3rem 1.2rem;
+            border-radius: 40px;
+            border: 1px solid #2b3748;
+        }
+
+        /* 界面占位 — 模拟 M3 UI 元素 */
+        .m3-ui-placeholder {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            margin: 2rem 0 1.8rem;
+        }
+
+        .ui-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            background: #131b25;
+            padding: 0.9rem 1.4rem;
+            border-radius: 60px;
+            border: 1px solid #293542;
+            transition: background 0.2s;
+        }
+
+        .ui-row .icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 12px;
+            background: #293a4a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            color: #b0cef0;
+        }
+
+        .ui-row .label {
+            flex: 1;
+            font-weight: 450;
+            color: #d2def0;
+            letter-spacing: 0.2px;
+        }
+
+        .ui-row .badge {
+            background: #1f3142;
+            padding: 0.25rem 0.9rem;
+            border-radius: 40px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #9bb3d4;
+            border: 1px solid #2f4057;
+        }
+
+        .ui-row .toggle {
+            width: 44px;
+            height: 24px;
+            background: #293b4e;
+            border-radius: 30px;
+            position: relative;
+            border: 1px solid #3f536b;
+        }
+        .ui-row .toggle::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: #7f9bc7;
+            border-radius: 50%;
+            transition: 0.2s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* 底部加载耗时 — 固定显示 */
+        .load-time-footer {
+            margin-top: 2rem;
+            padding-top: 1.2rem;
+            border-top: 1px solid #26303e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #8899b5;
+            letter-spacing: 0.3px;
+        }
+
+        .load-time-footer .time-value {
+            background: #131c27;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-weight: 500;
+            color: #b6d0f0;
+            border: 1px solid #2a384b;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .load-time-footer .hint {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .load-time-footer .hint i {
+            font-style: normal;
+            opacity: 0.6;
+        }
+
+        /* 辅助 */
+        .footnote {
+            margin-top: 1.2rem;
+            font-size: 0.65rem;
+            color: #4e617c;
+            text-align: center;
+            letter-spacing: 0.3px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 440px) {
+            .m3-card { padding: 1.6rem 1.2rem; }
+            .m3-logo { font-size: 3.6rem; }
+            .latency-bar { flex-wrap: wrap; gap: 8px; }
+            .latency-value { min-width: 70px; font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="m3-card">
+    <!-- 顶部：实时延迟 (与本站连接延迟) -->
+    <div class="latency-bar">
+        <div class="latency-label">
+            <span></span> 本站连接延迟
+        </div>
+        <div class="latency-value" id="latencyDisplay">
+            0 <small>ms</small>
+        </div>
+    </div>
+
+    <!-- M3 核心品牌区域 -->
+    <div class="m3-brand">
+        <div class="m3-logo">M3</div>
+        <div class="m3-sub">· 界面 ·</div>
+    </div>
+
+    <!-- 模拟 M3 UI 元素 (仅做视觉展示) -->
+    <div class="m3-ui-placeholder">
+        <div class="ui-row">
+            <div class="icon">⚡</div>
+            <div class="label">状态</div>
+            <div class="badge">在线</div>
+            <div class="toggle"></div>
+        </div>
+        <div class="ui-row">
+            <div class="icon">📡</div>
+            <div class="label">信号</div>
+            <div class="badge">强</div>
+            <div class="toggle" style="opacity:0.7;"></div>
+        </div>
+        <div class="ui-row">
+            <div class="icon">🧩</div>
+            <div class="label">扩展</div>
+            <div class="badge">3 项</div>
+            <div class="toggle" style="opacity:0.4;"></div>
+        </div>
+    </div>
+
+    <!-- 底部：加载所耗时 (每次进入页面显示) -->
+    <div class="load-time-footer">
+        <span class="hint">
+            <i>⏱️</i> 加载耗时
+        </span>
+        <span class="time-value" id="loadTimeDisplay">
+            -- <small>ms</small>
+        </span>
+    </div>
+</div>
+
+<div class="footnote">
+    M3 · 实时延迟 & 加载耗时 · 刷新页面更新
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ---------- 1. 底部加载耗时 (页面加载时记录) ----------
+        // 使用 performance.now() 或 Date.now() 计算从页面开始解析到现在的耗时
+        // 为了更准确，我们在页面完全加载后记录，但为了展示“进入页面”，使用 DOMContentLoaded 或 load。
+        // 更稳健：在 load 事件中计算，并显示从 navigationStart 到现在的耗时。
+        const loadTimeElement = document.getElementById('loadTimeDisplay');
+
+        function displayLoadTime() {
+            try {
+                // 使用 Performance API 获取更精确的加载耗时 (从导航开始到当前)
+                const perfData = performance.timing;
+                if (perfData && perfData.navigationStart) {
+                    const now = performance.now(); // 相对于 navigationStart 的毫秒数
+                    const loadTime = Math.round(now);
+                    loadTimeElement.innerHTML = `${loadTime} <small>ms</small>`;
+                } else {
+                    // fallback: Date.now() - 页面开始时间 (不精确但可用)
+                    const start = window.performance && window.performance.timing && window.performance.timing.navigationStart
+                        ? window.performance.timing.navigationStart
+                        : Date.now() - 1000; // 保底
+                    const elapsed = Date.now() - start;
+                    loadTimeElement.innerHTML = `${Math.round(elapsed)} <small>ms</small>`;
+                }
+            } catch (e) {
+                // 极端 fallback
+                loadTimeElement.innerHTML = `— <small>ms</small>`;
+            }
+        }
+
+        // 在 DOM 加载完成后显示，但为了更接近“进入页面”，我们可以在 load 事件触发时再更新一次。
+        // 但底部显示的是“加载所耗时”，一般指页面完全加载。我们用 load 事件。
+        if (document.readyState === 'complete') {
+            displayLoadTime();
+        } else {
+            window.addEventListener('load', function onLoad() {
+                displayLoadTime();
+                // 可选: 移除监听
+                window.removeEventListener('load', onLoad);
+            });
+        }
+
+        // 但为了更即时，如果 DOMContentLoaded 已触发，提前显示，load 再更新。
+        // 我们直接在脚本执行时显示一次粗略值，然后 load 时精确更新。
+        (function immediateDisplay() {
+            try {
+                const navStart = performance.timing?.navigationStart || Date.now() - 800;
+                const rough = Date.now() - navStart;
+                if (rough > 0 && rough < 10000) {
+                    loadTimeElement.innerHTML = `${Math.round(rough)} <small>ms</small>`;
+                }
+            } catch (_) { /* ignore */ }
+        })();
+
+
+        // ---------- 2. 顶部实时延迟 (与本站连接延迟) ----------
+        const latencyDisplay = document.getElementById('latencyDisplay');
+
+        // 延迟测量：发送一个 HEAD 请求到当前页面 (同站) 或 使用 fetch 测量 RTT
+        // 为了“与本站连接延迟”，我们请求当前页面的一个资源 (或 /favicon.ico 等)
+        // 使用 fetch 加 cache: 'no-store' 避免缓存，测量时间。
+        function measureLatency() {
+            const start = performance.now();
+            // 使用当前页面 URL 加上随机参数，避免缓存，同时请求一个轻量资源 (HEAD 或 小数据)
+            // 注意：有些浏览器对 HEAD 请求可能不会触发完整的网络往返，使用 GET 获取一个小文件更准确。
+            // 这里我们使用 fetch 请求当前页面本身，但只读取一小部分 (或使用 HEAD)
+            // 但由于 CORS 限制，请求当前页面是允许的 (同源)。
+            const url = window.location.href + '?latency=' + Date.now() + '&tiny=' + Math.random();
+
+            // 使用 AbortController 设定超时 (避免长时间挂起)
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超时
+
+            fetch(url, {
+                method: 'HEAD',   // HEAD 请求只获取响应头，数据量最小
+                cache: 'no-store',
+                mode: 'same-origin',
+                signal: controller.signal,
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                }
+            })
+            .then(response => {
+                clearTimeout(timeoutId);
+                const end = performance.now();
+                const rtt = Math.round(end - start);
+                // 限制显示范围 (避免异常值)
+                const displayRtt = Math.min(Math.max(rtt, 0), 9999);
+                latencyDisplay.innerHTML = `${displayRtt} <small>ms</small>`;
+            })
+            .catch(err => {
+                clearTimeout(timeoutId);
+                // 如果超时或网络错误，显示 "—" 或保留上次值，但为了实时，显示一个友好提示
+                if (err.name === 'AbortError') {
+                    latencyDisplay.innerHTML = `>5000 <small>ms</small>`;
+                } else {
+                    // 其他错误 (网络、CORS等) 显示 "—"
+                    latencyDisplay.innerHTML = `— <small>ms</small>`;
+                }
+                // 仍然继续下一次轮询
+            });
+        }
+
+        // 首次立即测量一次
+        measureLatency();
+
+        // 然后每 3 秒更新一次延迟 (实时)
+        const intervalId = setInterval(measureLatency, 3000);
+
+        // 可选：页面可见性变化时，保持后台不过度频繁，但保持简单。
+        // 如果页面被隐藏，可以降低频率，但为了简洁，不做额外处理。
+
+        // 清理定时器 (虽然不是必须，但好习惯)
+        window.addEventListener('beforeunload', function() {
+            clearInterval(intervalId);
+        });
+
+        // 额外: 如果用户点击或者页面切换，可以再测一次，但此处足够。
+
+        // 当页面重新获得焦点时，可以测一次，增强实时感。
+        document.addEventListener('visibilitychange', function() {
+            if (document.visibilityState === 'visible') {
+                measureLatency();
+            }
+        });
+
+        // 也监听 online/offline 事件
+        window.addEventListener('online', function() {
+            measureLatency();
+        });
+
+    })();
+</script>
+
+</body>
+</html>
