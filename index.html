@@ -1,446 +1,516 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
-    <title>M3 · 界面</title>
-    <style>
-        /* 重置 & 基础 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>🎵 音乐分享</title>
+  <!-- 引入 Material Symbols & Fonts (Google Material3 风格) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0,1" />
+  <style>
+    /* 全局重置 & Material3 色彩令牌 (动态深色/浅色) */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            background: #0f1219;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 1.2rem;
-            color: #eef3f9;
-        }
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #fef7f0;  /* 柔和背景，接近 Material3 浅色 surface */
+      color: #1c1b1f;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      transition: background-color 0.3s ease, color 0.2s ease;
+    }
 
-        /* 卡片 — M3 风格 */
-        .m3-card {
-            max-width: 480px;
-            width: 100%;
-            background: #1a202a;
-            border-radius: 48px;
-            padding: 2rem 1.8rem 2.2rem;
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.04);
-            border: 1px solid #2c3542;
-            transition: box-shadow 0.2s;
-            backdrop-filter: blur(2px);
-            position: relative;
-        }
+    /* 深色模式自动适配 (系统偏好) */
+    @media (prefers-color-scheme: dark) {
+      body {
+        background-color: #141218;
+        color: #e6e1e5;
+      }
+      .m3-card {
+        background: #1e1b20;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+      }
+      .m3-chip {
+        background: #2b282e;
+        color: #c9c4ca;
+      }
+      .m3-chip .material-symbols-outlined {
+        color: #cfc8d0;
+      }
+      .m3-button {
+        background: #3b3740;
+        color: #d0c9d4;
+      }
+      .m3-button:hover {
+        background: #4b4652;
+      }
+      .share-link {
+        background: #2c2930;
+        color: #d6d0d6;
+        border-color: #4a4452;
+      }
+      .share-link .material-symbols-outlined {
+        color: #b7b0ba;
+      }
+      .meta-label {
+        color: #a69faa;
+      }
+      .song-title {
+        color: #eae3ea;
+      }
+      .artist-name {
+        color: #cac2ce;
+      }
+      .divider {
+        background: #35303a;
+      }
+    }
 
-        /* 顶部延迟条 — 实时 */
-        .latency-bar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #0b0f16;
-            padding: 0.6rem 1.2rem;
-            border-radius: 60px;
-            margin-bottom: 2rem;
-            border: 1px solid #2c3a47;
-            box-shadow: inset 0 2px 3px rgba(0, 0, 0, 0.5);
-        }
+    /* 卡片 — 核心 Material3 表面 */
+    .m3-card {
+      max-width: 480px;
+      width: 100%;
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 28px 24px 32px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.02);
+      transition: box-shadow 0.2s, background 0.2s;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
-        .latency-label {
-            font-size: 0.8rem;
-            font-weight: 500;
-            letter-spacing: 0.02em;
-            color: #8e9bb3;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
+    /* 顶部：头像 + 标题 */
+    .card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .avatar {
+      width: 56px;
+      height: 56px;
+      border-radius: 28px;
+      background: #6750a4;  /* Material3 primary 色调 */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 28px;
+      font-weight: 500;
+      flex-shrink: 0;
+      box-shadow: 0 2px 6px rgba(103, 80, 164, 0.3);
+    }
+    .header-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .header-title {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      line-height: 1.2;
+    }
+    .header-sub {
+      font-size: 14px;
+      font-weight: 400;
+      color: #6750a4;  /* primary 色调 */
+      opacity: 0.8;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .header-sub .material-symbols-outlined {
+      font-size: 18px;
+    }
 
-        .latency-label span {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #3dd68c;
-            border-radius: 50%;
-            animation: pulse-dot 1.8s infinite;
-        }
+    /* 歌曲信息块 */
+    .song-block {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 4px 0;
+    }
+    .song-title {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+      color: #1c1b1f;
+    }
+    .artist-name {
+      font-size: 18px;
+      font-weight: 400;
+      color: #4a4458;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .artist-name .material-symbols-outlined {
+      font-size: 20px;
+      color: #7a7288;
+    }
 
-        @keyframes pulse-dot {
-            0% { opacity: 0.5; transform: scale(0.9); }
-            50% { opacity: 1; transform: scale(1.2); }
-            100% { opacity: 0.5; transform: scale(0.9); }
-        }
+    /* 分隔线 (优雅) */
+    .divider {
+      width: 100%;
+      height: 1px;
+      background: #e4e0e9;
+      margin: 4px 0;
+    }
 
-        .latency-value {
-            font-size: 1.1rem;
-            font-weight: 600;
-            background: #1e2835;
-            padding: 0.2rem 1rem;
-            border-radius: 40px;
-            color: #b6e6ff;
-            letter-spacing: 0.4px;
-            font-variant-numeric: tabular-nums;
-            border: 1px solid #334252;
-            min-width: 80px;
-            text-align: center;
-        }
-        .latency-value small {
-            font-size: 0.7rem;
-            font-weight: 400;
-            color: #7b8ba5;
-            margin-left: 4px;
-        }
+    /* 分享链接卡片 (类似 Material3 输入框) */
+    .share-link-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .share-label {
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+      color: #4a4458;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .share-link {
+      display: flex;
+      align-items: center;
+      background: #f2eff5;
+      border-radius: 18px;
+      padding: 8px 16px 8px 20px;
+      border: 1px solid #d9d3e0;
+      transition: border 0.15s, background 0.15s;
+      gap: 8px;
+      word-break: break-all;
+    }
+    .share-link .material-symbols-outlined {
+      color: #6750a4;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+    .share-link .link-text {
+      flex: 1;
+      font-size: 15px;
+      font-weight: 500;
+      color: #1c1b1f;
+      letter-spacing: 0.1px;
+      padding: 4px 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .share-link .copy-hint {
+      font-size: 13px;
+      background: #e8e4ed;
+      padding: 4px 12px;
+      border-radius: 30px;
+      color: #3b3645;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background 0.15s;
+    }
+    .share-link:hover {
+      border-color: #b3a8c4;
+      background: #f0ecf5;
+    }
 
-        /* M3 品牌 / 核心视觉 */
-        .m3-brand {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 1.8rem 0 2.4rem;
-        }
+    /* 操作按钮组 (Material3 风格) */
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 4px;
+    }
+    .m3-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 40px;
+      background: #e8e3f0;
+      color: #1c1b1f;
+      font-weight: 600;
+      font-size: 15px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.15s;
+      flex: 1 1 auto;
+      min-width: 120px;
+      letter-spacing: 0.3px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+      text-decoration: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .m3-button .material-symbols-outlined {
+      font-size: 22px;
+    }
+    .m3-button.primary {
+      background: #6750a4;
+      color: white;
+      box-shadow: 0 4px 8px rgba(103, 80, 164, 0.25);
+    }
+    .m3-button.primary:hover {
+      background: #4f378b;
+      box-shadow: 0 6px 12px rgba(103, 80, 164, 0.35);
+    }
+    .m3-button.secondary {
+      background: #e8e3f0;
+      color: #1c1b1f;
+    }
+    .m3-button.secondary:hover {
+      background: #d9d2e6;
+    }
+    .m3-button:active {
+      transform: scale(0.97);
+    }
 
-        .m3-logo {
-            font-size: 4.6rem;
-            font-weight: 700;
-            letter-spacing: -2px;
-            background: linear-gradient(145deg, #f0f7ff, #b0c9f0);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 0 20px rgba(80, 160, 255, 0.15);
-            line-height: 1;
-            margin-bottom: 0.2rem;
-        }
+    /* chip 标签 (风格小元件) */
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 2px;
+    }
+    .m3-chip {
+      background: #f0ecf5;
+      padding: 4px 14px 4px 12px;
+      border-radius: 30px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #201c2b;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.15s;
+    }
+    .m3-chip .material-symbols-outlined {
+      font-size: 18px;
+      color: #6750a4;
+    }
 
-        .m3-sub {
-            font-size: 0.9rem;
-            font-weight: 400;
-            color: #8b9bb8;
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            background: #1d2633;
-            padding: 0.3rem 1.2rem;
-            border-radius: 40px;
-            border: 1px solid #2b3748;
-        }
+    /* 响应式微调 */
+    @media (max-width: 400px) {
+      .m3-card { padding: 20px 16px 24px; }
+      .song-title { font-size: 22px; }
+      .action-row { flex-direction: column; }
+      .m3-button { flex: 1; justify-content: center; }
+      .share-link .link-text { font-size: 14px; white-space: normal; word-break: break-all; }
+      .share-link { flex-wrap: wrap; }
+    }
 
-        /* 界面占位 — 模拟 M3 UI 元素 */
-        .m3-ui-placeholder {
-            display: flex;
-            flex-direction: column;
-            gap: 1.2rem;
-            margin: 2rem 0 1.8rem;
-        }
+    /* 复制反馈动画 (轻提示) */
+    .toast-message {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) scale(0.95);
+      background: #1c1b1f;
+      color: white;
+      padding: 12px 28px;
+      border-radius: 40px;
+      font-weight: 500;
+      font-size: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 999;
+      backdrop-filter: blur(4px);
+      background: rgba(28, 27, 31, 0.9);
+    }
+    .toast-message.show {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+    }
 
-        .ui-row {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            background: #131b25;
-            padding: 0.9rem 1.4rem;
-            border-radius: 60px;
-            border: 1px solid #293542;
-            transition: background 0.2s;
-        }
-
-        .ui-row .icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 12px;
-            background: #293a4a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.1rem;
-            color: #b0cef0;
-        }
-
-        .ui-row .label {
-            flex: 1;
-            font-weight: 450;
-            color: #d2def0;
-            letter-spacing: 0.2px;
-        }
-
-        .ui-row .badge {
-            background: #1f3142;
-            padding: 0.25rem 0.9rem;
-            border-radius: 40px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            color: #9bb3d4;
-            border: 1px solid #2f4057;
-        }
-
-        .ui-row .toggle {
-            width: 44px;
-            height: 24px;
-            background: #293b4e;
-            border-radius: 30px;
-            position: relative;
-            border: 1px solid #3f536b;
-        }
-        .ui-row .toggle::after {
-            content: '';
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 18px;
-            height: 18px;
-            background: #7f9bc7;
-            border-radius: 50%;
-            transition: 0.2s;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        /* 底部加载耗时 — 固定显示 */
-        .load-time-footer {
-            margin-top: 2rem;
-            padding-top: 1.2rem;
-            border-top: 1px solid #26303e;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 0.8rem;
-            color: #8899b5;
-            letter-spacing: 0.3px;
-        }
-
-        .load-time-footer .time-value {
-            background: #131c27;
-            padding: 0.3rem 1rem;
-            border-radius: 40px;
-            font-weight: 500;
-            color: #b6d0f0;
-            border: 1px solid #2a384b;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .load-time-footer .hint {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .load-time-footer .hint i {
-            font-style: normal;
-            opacity: 0.6;
-        }
-
-        /* 辅助 */
-        .footnote {
-            margin-top: 1.2rem;
-            font-size: 0.65rem;
-            color: #4e617c;
-            text-align: center;
-            letter-spacing: 0.3px;
-        }
-
-        /* 响应式 */
-        @media (max-width: 440px) {
-            .m3-card { padding: 1.6rem 1.2rem; }
-            .m3-logo { font-size: 3.6rem; }
-            .latency-bar { flex-wrap: wrap; gap: 8px; }
-            .latency-value { min-width: 70px; font-size: 1rem; }
-        }
-    </style>
+    /* 链接专用样式 */
+    .link-icon {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+  </style>
 </head>
 <body>
+  <div class="m3-card" role="main" aria-label="音乐分享卡片">
 
-<div class="m3-card">
-    <!-- 顶部：实时延迟 (与本站连接延迟) -->
-    <div class="latency-bar">
-        <div class="latency-label">
-            <span></span> 本站连接延迟
+    <!-- 头部 -->
+    <div class="card-header">
+      <div class="avatar" aria-hidden="true">🎧</div>
+      <div class="header-text">
+        <div class="header-title">音乐分享</div>
+        <div class="header-sub">
+          <span class="material-symbols-outlined">library_music</span> 
+          <span>音乐分享</span>
         </div>
-        <div class="latency-value" id="latencyDisplay">
-            0 <small>ms</small>
-        </div>
+      </div>
     </div>
 
-    <!-- M3 核心品牌区域 -->
-    <div class="m3-brand">
-        <div class="m3-logo">M3</div>
-        <div class="m3-sub">· 界面 ·</div>
+    <!-- 分隔线 -->
+    <div class="divider" role="separator"></div>
+
+    <!-- 分享链接区域 (核心) -->
+    <div class="share-link-wrapper">
+      <div class="share-label">
+        <span class="material-symbols-outlined" style="font-size: 20px;">share</span>
+        分享链接
+      </div>
+      <div class="share-link" id="shareLinkContainer" role="link" aria-label="分享链接">
+        <span class="material-symbols-outlined link-icon">link</span>
+        <span class="link-text" id="shareLinkText">https://1855259731.share.123pan.cn/123pan/3cXCvd-Kv1hd</span>
+        <span class="copy-hint" id="copyHint">复制</span>
+      </div>
+      <!-- 快捷标签 (装饰) -->
+      <div class="chip-group">
+        <span class="m3-chip"><span class="material-symbols-outlined">check_circle</span> 有效期 ♾️ 天</span>
+        <span class="m3-chip"><span class="material-symbols-outlined">music_note</span> Hi-Res音质 / 无损音质</span>
+      </div>
     </div>
 
-    <!-- 模拟 M3 UI 元素 (仅做视觉展示) -->
-    <div class="m3-ui-placeholder">
-        <div class="ui-row">
-            <div class="icon">⚡</div>
-            <div class="label">状态</div>
-            <div class="badge">在线</div>
-            <div class="toggle"></div>
-        </div>
-        <div class="ui-row">
-            <div class="icon">📡</div>
-            <div class="label">信号</div>
-            <div class="badge">强</div>
-            <div class="toggle" style="opacity:0.7;"></div>
-        </div>
-        <div class="ui-row">
-            <div class="icon">🧩</div>
-            <div class="label">扩展</div>
-            <div class="badge">3 项</div>
-            <div class="toggle" style="opacity:0.4;"></div>
-        </div>
+    <!-- 操作按钮 -->
+    <div class="action-row">
+      <button class="m3-button primary" id="openLinkBtn" aria-label="打开分享链接">
+        <span class="material-symbols-outlined">open_in_new</span> 打开链接
+      </button>
+      <button class="m3-button secondary" id="copyLinkBtn" aria-label="复制分享链接">
+        <span class="material-symbols-outlined">content_copy</span> 复制
+      </button>
     </div>
 
-    <!-- 底部：加载所耗时 (每次进入页面显示) -->
-    <div class="load-time-footer">
-        <span class="hint">
-            <i>⏱️</i> 加载耗时
-        </span>
-        <span class="time-value" id="loadTimeDisplay">
-            -- <small>ms</small>
-        </span>
+    <!-- 附加信息 (Material3 风格脚注) -->
+    <div style="font-size: 13px; color: #7a7288; display: flex; gap: 16px; margin-top: 6px; align-items: center; flex-wrap: wrap;">
+      <span style="display: flex; align-items: center; gap: 4px;">
+        <span class="material-symbols-outlined" style="font-size: 16px;">schedule</span> 分享于 2026-08-03
+      </span>
+      <span style="display: flex; align-items: center; gap: 4px;">
+        <span class="material-symbols-outlined" style="font-size: 16px;">cloud</span> 123云盘
+      </span>
     </div>
-</div>
+  </div>
 
-<div class="footnote">
-    M3 · 实时延迟 & 加载耗时 · 刷新页面更新
-</div>
+  <!-- 轻提示 Toast -->
+  <div id="toast" class="toast-message">已复制到剪贴板</div>
 
-<script>
+  <script>
     (function() {
-        'use strict';
+      const shareLinkText = document.getElementById('shareLinkText');
+      const copyHint = document.getElementById('copyHint');
+      const copyBtn = document.getElementById('copyLinkBtn');
+      const openBtn = document.getElementById('openLinkBtn');
+      const toast = document.getElementById('toast');
+      const shareContainer = document.getElementById('shareLinkContainer');
 
-        // ---------- 1. 底部加载耗时 (页面加载时记录) ----------
-        // 使用 performance.now() 或 Date.now() 计算从页面开始解析到现在的耗时
-        // 为了更准确，我们在页面完全加载后记录，但为了展示“进入页面”，使用 DOMContentLoaded 或 load。
-        // 更稳健：在 load 事件中计算，并显示从 navigationStart 到现在的耗时。
-        const loadTimeElement = document.getElementById('loadTimeDisplay');
+      // 核心链接 (不可变)
+      const LINK = 'https://1855259731.share.123pan.cn/123pan/3cXCvd-Kv1hd';
 
-        function displayLoadTime() {
-            try {
-                // 使用 Performance API 获取更精确的加载耗时 (从导航开始到当前)
-                const perfData = performance.timing;
-                if (perfData && perfData.navigationStart) {
-                    const now = performance.now(); // 相对于 navigationStart 的毫秒数
-                    const loadTime = Math.round(now);
-                    loadTimeElement.innerHTML = `${loadTime} <small>ms</small>`;
-                } else {
-                    // fallback: Date.now() - 页面开始时间 (不精确但可用)
-                    const start = window.performance && window.performance.timing && window.performance.timing.navigationStart
-                        ? window.performance.timing.navigationStart
-                        : Date.now() - 1000; // 保底
-                    const elapsed = Date.now() - start;
-                    loadTimeElement.innerHTML = `${Math.round(elapsed)} <small>ms</small>`;
-                }
-            } catch (e) {
-                // 极端 fallback
-                loadTimeElement.innerHTML = `— <small>ms</small>`;
-            }
-        }
+      // 显示 Toast 提示
+      function showToast(message = '已复制到剪贴板') {
+        toast.textContent = message;
+        toast.classList.add('show');
+        clearTimeout(window.toastTimer);
+        window.toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2200);
+      }
 
-        // 在 DOM 加载完成后显示，但为了更接近“进入页面”，我们可以在 load 事件触发时再更新一次。
-        // 但底部显示的是“加载所耗时”，一般指页面完全加载。我们用 load 事件。
-        if (document.readyState === 'complete') {
-            displayLoadTime();
+      // 复制功能 (使用 Clipboard API)
+      function copyLink() {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(LINK)
+            .then(() => {
+              showToast('✅ 链接已复制');
+              // 临时反馈
+              copyHint.textContent = '已复制 ✓';
+              setTimeout(() => { copyHint.textContent = '复制'; }, 1800);
+            })
+            .catch(() => {
+              // fallback
+              fallbackCopy(LINK);
+            });
         } else {
-            window.addEventListener('load', function onLoad() {
-                displayLoadTime();
-                // 可选: 移除监听
-                window.removeEventListener('load', onLoad);
-            });
+          fallbackCopy(LINK);
         }
+      }
 
-        // 但为了更即时，如果 DOMContentLoaded 已触发，提前显示，load 再更新。
-        // 我们直接在脚本执行时显示一次粗略值，然后 load 时精确更新。
-        (function immediateDisplay() {
-            try {
-                const navStart = performance.timing?.navigationStart || Date.now() - 800;
-                const rough = Date.now() - navStart;
-                if (rough > 0 && rough < 10000) {
-                    loadTimeElement.innerHTML = `${Math.round(rough)} <small>ms</small>`;
-                }
-            } catch (_) { /* ignore */ }
-        })();
-
-
-        // ---------- 2. 顶部实时延迟 (与本站连接延迟) ----------
-        const latencyDisplay = document.getElementById('latencyDisplay');
-
-        // 延迟测量：发送一个 HEAD 请求到当前页面 (同站) 或 使用 fetch 测量 RTT
-        // 为了“与本站连接延迟”，我们请求当前页面的一个资源 (或 /favicon.ico 等)
-        // 使用 fetch 加 cache: 'no-store' 避免缓存，测量时间。
-        function measureLatency() {
-            const start = performance.now();
-            // 使用当前页面 URL 加上随机参数，避免缓存，同时请求一个轻量资源 (HEAD 或 小数据)
-            // 注意：有些浏览器对 HEAD 请求可能不会触发完整的网络往返，使用 GET 获取一个小文件更准确。
-            // 这里我们使用 fetch 请求当前页面本身，但只读取一小部分 (或使用 HEAD)
-            // 但由于 CORS 限制，请求当前页面是允许的 (同源)。
-            const url = window.location.href + '?latency=' + Date.now() + '&tiny=' + Math.random();
-
-            // 使用 AbortController 设定超时 (避免长时间挂起)
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5秒超时
-
-            fetch(url, {
-                method: 'HEAD',   // HEAD 请求只获取响应头，数据量最小
-                cache: 'no-store',
-                mode: 'same-origin',
-                signal: controller.signal,
-                headers: {
-                    'Cache-Control': 'no-cache, no-store, must-revalidate',
-                    'Pragma': 'no-cache'
-                }
-            })
-            .then(response => {
-                clearTimeout(timeoutId);
-                const end = performance.now();
-                const rtt = Math.round(end - start);
-                // 限制显示范围 (避免异常值)
-                const displayRtt = Math.min(Math.max(rtt, 0), 9999);
-                latencyDisplay.innerHTML = `${displayRtt} <small>ms</small>`;
-            })
-            .catch(err => {
-                clearTimeout(timeoutId);
-                // 如果超时或网络错误，显示 "—" 或保留上次值，但为了实时，显示一个友好提示
-                if (err.name === 'AbortError') {
-                    latencyDisplay.innerHTML = `>5000 <small>ms</small>`;
-                } else {
-                    // 其他错误 (网络、CORS等) 显示 "—"
-                    latencyDisplay.innerHTML = `— <small>ms</small>`;
-                }
-                // 仍然继续下一次轮询
-            });
+      // 兼容旧方式
+      function fallbackCopy(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        try {
+          document.execCommand('copy');
+          showToast('✅ 链接已复制');
+          copyHint.textContent = '已复制 ✓';
+          setTimeout(() => { copyHint.textContent = '复制'; }, 1800);
+        } catch (err) {
+          showToast('❌ 复制失败，请手动复制');
         }
+        document.body.removeChild(textarea);
+      }
 
-        // 首次立即测量一次
-        measureLatency();
+      // 打开链接 (新窗口)
+      function openLink() {
+        window.open(LINK, '_blank', 'noopener,noreferrer');
+        // 轻反馈
+        showToast('🔗 正在打开链接...');
+      }
 
-        // 然后每 3 秒更新一次延迟 (实时)
-        const intervalId = setInterval(measureLatency, 3000);
+      // 点击卡片上的复制区域 (整个分享链接块)
+      shareContainer.addEventListener('click', function(e) {
+        // 防止和内部按钮冲突 (但内部按钮自己处理)
+        if (e.target.closest('.copy-hint') || e.target.closest('#copyLinkBtn')) {
+          return;
+        }
+        copyLink();
+      });
 
-        // 可选：页面可见性变化时，保持后台不过度频繁，但保持简单。
-        // 如果页面被隐藏，可以降低频率，但为了简洁，不做额外处理。
+      // 复制按钮
+      copyBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        copyLink();
+      });
 
-        // 清理定时器 (虽然不是必须，但好习惯)
-        window.addEventListener('beforeunload', function() {
-            clearInterval(intervalId);
-        });
+      // 打开按钮
+      openBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        openLink();
+      });
 
-        // 额外: 如果用户点击或者页面切换，可以再测一次，但此处足够。
+      // 点击 "复制" 标签（copy-hint）触发复制 (防止冒泡干扰)
+      copyHint.addEventListener('click', function(e) {
+        e.stopPropagation();
+        copyLink();
+      });
 
-        // 当页面重新获得焦点时，可以测一次，增强实时感。
-        document.addEventListener('visibilitychange', function() {
-            if (document.visibilityState === 'visible') {
-                measureLatency();
-            }
-        });
+      // 键盘可访问性 (Enter/Space)
+      shareContainer.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          copyLink();
+        }
+      });
+      // 设置 role 为 button 使其可聚焦
+      shareContainer.setAttribute('role', 'button');
+      shareContainer.setAttribute('tabindex', '0');
+      shareContainer.setAttribute('aria-label', '复制分享链接');
 
-        // 也监听 online/offline 事件
-        window.addEventListener('online', function() {
-            measureLatency();
-        });
+      // 额外：点击卡片上的 "打开链接" 和 "复制" 按钮不会触发两次 toast
+      // 一切正常
 
+      // 初始化时保证链接文本正确
+      shareLinkText.textContent = LINK;
     })();
-</script>
-
+  </script>
 </body>
 </html>
